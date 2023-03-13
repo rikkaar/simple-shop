@@ -9,7 +9,9 @@ router.get('/', itemController.get)
 router.get('/:id', itemController.getById)
 router.delete('/:id', CheckRoleMiddleware('ADMIN'), itemController.delete)
 
-router.post('/rating/:itemId', itemController.getRating)
+router.post('/rating/:itemId', itemController.getOverallRating)
 router.post('/rate', AuthMiddleware, itemController.rate)
+router.post('/rate/:itemId', AuthMiddleware, itemController.getPersonalRate)
+router.delete('/rate/:itemId', AuthMiddleware, itemController.deletePersonalRate)
 
 module.exports = router

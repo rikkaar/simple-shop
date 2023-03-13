@@ -56,12 +56,43 @@ class ItemController {
         )
 
         try {
-            const items = await Item.findAndCountAll({where: filter, order, limit, offset})
-            return res.json(items)
+            const items = await Item.findAll({
+                where: filter,
+                order,
+                offset,
+                limit,
+                subQuery: false,
+                attributes: {
+                    include: [
+                        [sequelize.fn('AVG', sequelize.col('rate')), 'avgRating'],
+                        // [sequelize.col('ratings.rate'), 'personalRating']
+                    ]
+                },
+                include: [
+                    {model: ItemInfo, as: 'info'},
+                    {
+                        model: Rating,
+                        attributes: [],
+                    },
+                ],
+                group: ['item.id', "info.id"],
+            })
+
+            const itemCount = await Item.count({
+                where: filter
+            })
+
+            return res.json(
+                {
+                    count: itemCount,
+                    rows: items
+                }
+            )
         } catch (e) {
-            if (e.name === "SequelizeDatabaseError")
-                return next(ApiError.badRequest(e.name))
-            else return next(ApiError.badRequest(e.name))
+            console.log(e.message)
+            // if (e.name === "SequelizeDatabaseError")
+            //     return next(ApiError.badRequest(e.name))
+            // else return next(ApiError.badRequest(e.name))
         }
     }
 
@@ -70,7 +101,24 @@ class ItemController {
         if (!id) {
             return next(ApiError.badRequest("В запросе не указан id!"))
         }
-        const item = await Item.findOne({where: {id}, include: [{model: ItemInfo, as: 'info'}]})
+
+        const item = await Item.findOne({
+            where: {id},
+            attributes: {
+                include: [
+                    [sequelize.fn('AVG', sequelize.col('rate')), 'avgRating'],
+                    // [sequelize.col('ratings.rate'), 'personalRating']
+                ]
+            },
+            include: [
+                {model: ItemInfo, as: 'info'},
+                {
+                    model: Rating,
+                    attributes: [],
+                },
+            ],
+            group: ['item.id', "info.id"],
+        })
         res.json(item)
     }
 
@@ -100,51 +148,16 @@ class ItemController {
 
         // отобразить оценку залогиненого юзера
         // проверить, ставил ли он оценку уже
-        //
     }
 
-    async getRating(req, res, next) {
+    async getOverallRating(req, res, next) {
         const {itemId} = req.params
-
-        // const item = await Item.findOne({
-        //     where: {id: itemId},
-        //     include: Rating
-        // })
-
-        // [sequelize.fn('avg', sequelize.col(Rating.rate)), 'calc']
-
-        // [sequelize.fn('avg', sequelize.col('rate')),'calc']
-
-        // const item = await Item.findOne({
-        //     where: {id: itemId},
-        //     include: [
-        //         {
-        //             model: Rating,
-        //             attributes: ['rate']
-        //         }
-        //     ],
-        //     group: ["item.id", "ratings.id"]
-        // })
-
-
-        // const item = await Item.findOne({
-        //     where: {id: itemId},
-        //     include: [
-        //         {
-        //             model: Rating,
-        //             as: "ratings",
-        //             attributes: ['rate']
-        //         }
-        //     ],
-        //     attributes: ["item.id", 'ratings.rate'],
-        //     group: ["item.id", "ratings.id"]
-        // })
-
         const item = await Item.findOne({
             where: {id: itemId},
             attributes: {
                 include: [
                     [sequelize.fn('AVG', sequelize.col('rate')), 'avgRating'],
+                    // [sequelize.col('ratings.rate'), 'personalRating']
                 ]
             },
             include: [
@@ -154,29 +167,35 @@ class ItemController {
                 },
             ],
             group: ['item.id'],
+            // group: ['item.id', 'ratings.rate'],
         })
 
-
-        // const item = await Item.findOne({
-        //     where: {id: itemId},
-        //     include: [
-        //         {
-        //             model: Rating,
-        //             as: "newrate",
-        //             attributes: []
-        //         },
-        //     ],
-        //     attributes:{
-        //         include: [
-        //             [sequelize.fn('avg', sequelize.col('newrate.rate')), 'calced'],
-        //         ],
-        //     },
-        //     group: ['Item.id']
-        // })
         console.log(item)
         return res.json(item)
+    }
+
+    async getPersonalRate(req, res, next) {
+        try {
+            const {itemId} = req.params
+            const item = await Rating.findOne({
+                where: {itemId: itemId, userId: req.user.id},
+                attributes: ["rate"]
+            })
+            return res.json(item)
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
+    }
 
 
+    async deletePersonalRate(req, res, next) {
+        try {
+            const {itemId} = req.params
+            const item = await Rating.destroy({where: {itemId: itemId, userId: req.user.id}})
+            return res.json(item)
+        } catch (e) {
+            return next(ApiError.badRequest(e.message))
+        }
     }
 }
 
