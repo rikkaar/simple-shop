@@ -27,45 +27,5 @@ const NavBar = observer(() => {
         </div>);
 })
 
-// if (user.role === 'ADMIN') {
-//     return (
-//         <nav className={"nav"}>
-//             <div className={"toHome"}>
-//             </div>
-//             <li className="nav__items">
-//                 <Link to={"#"} className={"nav__item"}>Товары</Link>
-//                 <Link to={"#"} className={"nav__item"}>Админ панель</Link>
-//                 <img src="#" alt="" className="user-icon"/>
-//             </li>
-//         </nav>
-//     );
-// } else if (user.isAuth) {
-//     return (
-//         <nav className={"nav"}>
-//             <div className={"toHome"}>
-//
-//             </div>
-//             <li className="nav__items">
-//                 <ol className={"nav__item"}>Товары</ol>
-//                 <ol className={"nav__item"}>Корзина</ol>
-//                 <img src="#" alt="" className="user-icon"/>
-//             </li>
-//         </nav>
-//     );
-// } else return (
-//     <nav className={"nav"}>
-//         <Link to={"/home"} className={"toHome"}>
-//             ЧайКофе
-//         </Link>
-//         <li className="nav__items">
-//             <Link to={"/"} className={"nav__item"}>Товары</Link>
-//             <Link to={"/registration"} className={"nav__item"}>Авторизация</Link>
-//         </li>
-//     </nav>
-// );
-//
-//
-// }
-// ;
 
 export default NavBar;
