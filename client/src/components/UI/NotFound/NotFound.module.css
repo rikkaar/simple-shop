@@ -1,0 +1,44 @@
+.error404 {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+.big {
+    text-transform: uppercase;
+    font-size: 200px;
+    color: #5050c9;
+}
+
+.error404Content {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+}
+
+.homeBtn {
+    width: 200px;
+    height: 70px;
+    border-radius: 20px;
+    background-color: #5050c9;
+    color: white;
+    font-size: 25px;
+    text-transform: lowercase;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    border: none;
+}
+
+.homeBtn:hover {
+    background-color: #9090f6;
+}
