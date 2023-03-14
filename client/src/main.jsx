@@ -1,11 +1,11 @@
-import React, {createContext} from 'react';
+import React, from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './styles/index.css';
 import UserStore from "./store/UserStore";
 import ItemStore from "./store/ItemStore";
 
-export const Context = createContext(null)
+import { Context } from "./store/Context.jsx"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,7 +13,7 @@ root.render(
         user: new UserStore(),
         item: new ItemStore(),
     }}>
-        <App />
+        <App/>
     </Context.Provider>
 );
 

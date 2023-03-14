@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {Route, Routes} from "react-router-dom";
 import {routes} from "../router/index.jsx";
-import {Context} from "../main.jsx";
+import {Context} from "../store/Context.jsx";
 
 
 
