@@ -2,6 +2,7 @@ const {User, Basket, BasketItems} = require('../models/models')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const ApiError = require('../error/ApiError')
+const UserService = require('../service/user-service')
 
 const generateJWT = (id, email, role) => {
     return jwt.sign(
@@ -56,6 +57,63 @@ class UserController {
         const token = generateJWT(user.id, user.email, user.role)
         return res.json(token)
     }
+
+    async logout (req, res, next) {
+        try {
+
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
+
+    async checkmail (req, res, next) {
+        try {
+            const {email} = req.body
+            res.json(await UserService.isEmailValid(email, next))
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
+
+    async activate (req, res, next) {
+        try {
+            const {link} = req.params
+            const user = await User.findOne({where: {activationLink: link}})
+            res.json(await user.update({isActivated: true}))
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
+
+    async reg (req, res, next) {
+        try {
+            let {email, password, username, role} = req.body
+            role = role || "USER"
+            const userData = await UserService.registration(username, email, password, role, next)
+            res.cookie('refreshToken', userData.refreshToken, {maxAge: 15 * 24 * 60 * 60 * 1000, httpOnly: true})
+            res.json(userData)
+
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
+
+    async refresh (req, res, next) {
+        try {
+
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
+
+    async getUsers (req, res, next) {
+        try {
+
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
+
 
     async isAuth (req, res) {
         const token = generateJWT(req.user.id, req.user.email, req.user.role)

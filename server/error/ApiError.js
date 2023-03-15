@@ -7,6 +7,8 @@ class ApiError extends Sequelize.Error {
         this.message = message
     }
 
+
+
     static badRequest (message) {
         return new ApiError(400, message)
     }
@@ -16,7 +18,7 @@ class ApiError extends Sequelize.Error {
     }
 
     static validation (message) {
-        return
+        return new ApiError(500, message)
     }
 
 }

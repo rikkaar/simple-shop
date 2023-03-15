@@ -5,9 +5,16 @@ const User = sequelize.define('user',{
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     email: {type: DataTypes.STRING, unique: true},
     password: {type: DataTypes.STRING},
+    isActivated: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: true},
+    activationLink: {type: DataTypes.STRING, allowNull: true},
     role: {type: DataTypes.STRING, defaultValue: "USER"},
     username: {type: DataTypes.STRING, unique: true, allowNull: false},
     img: {type: DataTypes.STRING, allowNull: true}
+})
+
+const Token = sequelize.define('token', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    refreshToken: {type: DataTypes.STRING}
 })
 
 const Basket = sequelize.define('basket',{
@@ -85,6 +92,9 @@ BasketItems.belongsTo(Item)
 User.hasMany(Comments)
 Comments.belongsTo(User)
 
+User.hasOne(Token)
+Token.belongsTo(User)
+
 Item.hasMany(Comments)
 Comments.belongsTo(Item)
 
@@ -102,5 +112,5 @@ module.exports = {
     Category,
     Brand,
     BasketItems,
-
+    Token
 }
