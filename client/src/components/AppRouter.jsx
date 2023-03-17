@@ -18,11 +18,11 @@ const AppRouter = () => {
     console.log(user)
     return (
         <Routes>
-            {routes.map(route => {
+            {routes.map((route, index) => {
                 if (route.private && !user.isAuth) {
-                    return (<Route path={route.path} element={route.redirect ? route.redirect() : UnAuthRedirection()}/>)
+                    return (<Route key={index} path={route.path} element={route.redirect ? route.redirect() : UnAuthRedirection()}/>)
                 }
-                else return (<Route path={route.path} element={route.element()}/>)
+                else return (<Route key={index} path={route.path} element={route.element()}/>)
             })}
         </Routes>
     );

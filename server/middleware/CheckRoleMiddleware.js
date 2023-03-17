@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const ApiError = require("../error/ApiError");
 
 module.exports = function (role) {
     return function (req, res, next) {
@@ -17,7 +18,7 @@ module.exports = function (role) {
             req.user = decoded
             next()
         } catch (e) {
-            res.status(401).json({message: "Пользователь не авторизован"})
+            next(ApiError.unauthorized("UserUnauthorized", "Пользователь не авторизован"))
         }
     }
 }

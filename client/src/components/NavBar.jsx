@@ -5,9 +5,10 @@ import {observer} from "mobx-react-lite";
 
 const NavBar = observer(() => {
     const avatar = 'https://css.cua.edu/wp-content/uploads/2018/06/avatar-1577909_960_720.jpg'
-    const {user} = useContext(Context)
+    const {user, auth} = useContext(Context)
+
     return (
-        <div className={"flex items-center justify-between w-full h-10 px-4 bg-slate-500"}>
+        <div className={"flex items-center justify-between w-full h-10 px-4 bg-slate-500 fixed z-50"}>
             <Link to={"/home"} className={"text-2xl"}>
                 ЧайКофе
             </Link>
@@ -22,7 +23,7 @@ const NavBar = observer(() => {
                 : <ul className="list-none">
                     <Link to={"/"} className={"nav__item"}>Товары</Link>
                     <Link to={"/registration"} className={"nav__item"}
-                          onClick={() => user.setIsAuth(true)}>Авторизация</Link>
+                          onClick={() => auth.setIsVisible(!auth.isVisible)}>Авторизация</Link>
                 </ul>
             }
         </div>);

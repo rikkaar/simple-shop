@@ -1,24 +1,24 @@
 const Sequelize = require('sequelize')
 
 class ApiError extends Sequelize.Error {
-    constructor(status, message) {
+    constructor(status, name, message, errors = []) {
         super();
         this.status = status
+        this.name = name
         this.message = message
+        this.errors = errors
     }
 
-
-
-    static badRequest (message) {
-        return new ApiError(400, message)
+    static badRequest(name, message, errors = []) {
+        return new ApiError(400, name, message, errors)
     }
 
-    static internal (message) {
-        return new ApiError(500, message)
+    static unauthorized(name, message, errors = []) {
+        return new ApiError(401, name, message, errors)
     }
 
-    static validation (message) {
-        return new ApiError(500, message)
+    static internal(name, message, errors = []) {
+        return new ApiError(500, name, message, errors)
     }
 
 }

@@ -1,24 +1,25 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import classes from "./modal.module.css";
+import {observer} from "mobx-react-lite";
+import {Context} from "../../../store/Context.jsx";
 
 
 
-const Modal = ({children, visible, setVisible, context}) => {
-
+const Modal = observer(({children, context}) => {
+    const {auth} = useContext(Context)
     const rootClasses = [classes.modal]
 
-    if (visible) {
+    if (auth.isVisible) {
         rootClasses.push(classes.active)
     }
 
-    console.log(visible)
     return (
-        <div className={rootClasses.join(' ')} onClick={() => setVisible(false)}>
+        <div className={rootClasses.join(' ')} onClick={() => auth.setIsVisible(false)}>
             <div className={classes.modalContent} onClick={e => e.stopPropagation()}>
                 {children}
             </div>
         </div>
     );
-};
+});
 
 export default Modal;
