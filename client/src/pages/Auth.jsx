@@ -7,13 +7,23 @@ const Auth = () => {
     const [emailErrors, setEmailErrors] = useState([])
     const [usernameErrors, setUsernameErrors] = useState([])
     const [passwordErrors, setPasswordErrors] = useState([])
+    const [passwordVerifyErrors, setPasswordVerifyErrors] = useState([])
 
     const emailRef = useRef(null)
     const usernameRef = useRef(null)
     const passwordRef = useRef(null)
+    const passwordVerifyRef = useRef(null)
+    const buttonRef = useRef(null)
 
     const handleSubmit = (e) => {
         e.preventDefault()
+    }
+
+    const verifyPasswords = () => {
+        if (passwordRef.current.value !== passwordVerifyRef.current.value) {
+            return setPasswordVerifyErrors(["Пароли неравны"])
+        }
+        setPasswordVerifyErrors([])
     }
 
     const checkEmail = async (email) => {
@@ -53,6 +63,13 @@ const Auth = () => {
         return setPasswordErrors([])
     }
 
+    const validateAll = async () => {
+        await checkUsername(usernameRef.current.target)
+        await checkEmail(emailRef.current.target)
+        checkPassword(passwordRef.current.target)
+        verifyPasswords()
+    }
+
     return (
         <Modal>
             <form onSubmit={handleSubmit} action="" className={'flex-col flex items-center gap-2'}>
@@ -64,7 +81,6 @@ const Auth = () => {
                     type="text" placeholder={"Введите email"}/>
                 {emailErrors
                     ? emailErrors.map(error => {
-                        console.log("new error")
                         return <p className={"text-xs w-full text-red-400 pl-2"}>
                             {error}
                         </p>
@@ -91,7 +107,19 @@ const Auth = () => {
                     type="text" placeholder={"Введите пароль"}/>
                 {passwordErrors
                     ? passwordErrors.map(error => {
-                        console.log("new error")
+                        return <p className={"text-xs w-full text-red-400 pl-2"}>
+                            {error}
+                        </p>
+                    })
+                    : null
+                }
+                <input
+                    ref={passwordVerifyRef}
+                    onBlur={() => verifyPasswords()}
+                    className={"focus:drop-shadow-md focus:outline-none border-2 rounded-bl px-3 w-full h-10"}
+                    type="text" placeholder={"Повторите ввод пароля"}/>
+                {passwordVerifyErrors
+                    ? passwordVerifyErrors.map(error => {
                         return <p className={"text-xs w-full text-red-400 pl-2"}>
                             {error}
                         </p>
@@ -99,8 +127,11 @@ const Auth = () => {
                     : null
                 }
                 <button
-                    className={"focus:drop-shadow-md focus:outline-none self-end w-1/6 h-10 bg-green-400 rounded-lg"}
-                    type={"submit"}>Войти
+                    disabled={false}
+                    ref={buttonRef}
+                    onClick={() => validateAll()}
+                    className={"focus:drop-shadow-md focus:outline-none self-end p-2 h-10 bg-green-400 rounded-lg"}
+                    type={"submit"}>Зарегистрироваться
                 </button>
             </form>
         </Modal>

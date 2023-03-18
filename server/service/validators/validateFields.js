@@ -2,7 +2,7 @@ const {check} = require('express-validator');
 
 exports.validadtePassword =
     check('password')
-        .isLength({min: 5})
+        .isLength({min: 5, max: 32})
         .withMessage('Минимальная длина пароля: 5 символов')
         .matches(/\d/)
         .withMessage('Пароль должен содержать хотя бы одну цифру');
