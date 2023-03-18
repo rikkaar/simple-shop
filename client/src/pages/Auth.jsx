@@ -1,9 +1,7 @@
-import React, {startTransition, useContext, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import Modal from "../components/UI/Modal/Modal.jsx";
-import {Context} from "../store/Context.jsx";
-import {observer} from "mobx-react-lite";
 import AuthService from '../services/AuthService.js'
-import {unmountComponentAtNode} from "react-dom";
+import {validateEmail, validatePassword} from '../utils/validations.js'
 
 const Auth = () => {
     const [emailErrors, setEmailErrors] = useState([])
@@ -18,69 +16,41 @@ const Auth = () => {
         e.preventDefault()
     }
 
-    const validateEmail = async (email) => {
+    const checkEmail = async (email) => {
+        const errors = validateEmail(email)
+        if (errors.length)
+            return setEmailErrors(errors)
         try {
-            if (email)
-                await AuthService.checkEmail(email)
-                    .then(() => setEmailErrors([]))
-            else setEmailErrors(["введите почту"])
+            await AuthService.checkEmail(email)
+            return setEmailErrors([])
         } catch (e) {
-            const res = e.response.data
-            console.log(res)
-            if (res) {
-                if (res.name === "UserAlreadyExist") {
-                    setEmailErrors(["Пользователь уже зарегистрирован"])
-                } else if (res.name === "ValidationError") {
-                    if (res.errors) {
-                        const errors = []
-                        res.errors.map(error => {
-                            errors.push(error.msg)
-                        })
-                        setEmailErrors(errors)
-                    }
-                }
+            if (e.code === "ERR_NETWORK") {
+                return setEmailErrors(['Сервер временно недоступен'])
             }
+            return setEmailErrors(["Пользователь с такой почтой уже существует"])
         }
     }
 
-    const validateUsername = async (username) => {
+    const checkUsername = async (username) => {
+        if (!username) {
+            return setUsernameErrors(["Введите имя пользователя"])
+        }
         try {
-            if (username)
-                await AuthService.checkUsername(username)
-                    .then(() => setUsernameErrors([]))
-            else setUsernameErrors(["Введите имя пользователя"])
+            await AuthService.checkUsername(username)
+            return setUsernameErrors([])
         } catch (e) {
-            const res = e.response.data
-            if (res) {
-                if (res.name === "UsernameTaken") {
-                    setUsernameErrors(["Это имя занято"])
-                }
+            if (e.code === "ERR_NETWORK") {
+                return setEmailErrors(['Сервер временно недоступен'])
             }
+            return setUsernameErrors(["Пользователь с таким именем уже существует"])
         }
     }
 
-    const validatePassword = async (password) => {
-        try {
-            if (password)
-                await AuthService.checkPassword(password)
-                    .then(() => setPasswordErrors([]))
-            else setPasswordErrors(["Введите пароль"])
-        } catch (e) {
-            const res = e.response.data
-            if (res) {
-                if (res.name === "UserAlreadyExist") {
-                    setPasswordErrors(["Пользователь уже зарегистрирован"])
-                } else if (res.name === "ValidationError") {
-                    if (res.errors) {
-                        const errors = []
-                        res.errors.map(error => {
-                            errors.push(error.msg)
-                        })
-                        setPasswordErrors(errors)
-                    }
-                }
-            }
-        }
+    const checkPassword = (password) => {
+        const errors = validatePassword(password)
+        if (errors.length)
+            return setPasswordErrors(errors)
+        return setPasswordErrors([])
     }
 
     return (
@@ -89,7 +59,7 @@ const Auth = () => {
                 <p className={"text-lg"}>Авторизация</p>
                 <input
                     ref={emailRef}
-                    onBlur={() => validateEmail(emailRef.current.value)}
+                    onBlur={() => checkEmail(emailRef.current.value)}
                     className={"focus:drop-shadow-md focus:outline-none border-2 rounded-bl px-3 w-full h-10"}
                     type="text" placeholder={"Введите email"}/>
                 {emailErrors
@@ -103,7 +73,7 @@ const Auth = () => {
                 }
                 <input
                     ref={usernameRef}
-                    onBlur={() => validateUsername(usernameRef.current.value)}
+                    onBlur={() => checkUsername(usernameRef.current.value)}
                     className={"focus:drop-shadow-md focus:outline-none border-2 rounded-bl px-3 w-full h-10"}
                     type="text" placeholder={"Введите имя пользователя"}/>
                 {usernameErrors
@@ -116,7 +86,7 @@ const Auth = () => {
                 }
                 <input
                     ref={passwordRef}
-                    onBlur={() => validatePassword(passwordRef.current.value)}
+                    onBlur={() => checkPassword(passwordRef.current.value)}
                     className={"focus:drop-shadow-md focus:outline-none border-2 rounded-bl px-3 w-full h-10"}
                     type="text" placeholder={"Введите пароль"}/>
                 {passwordErrors
