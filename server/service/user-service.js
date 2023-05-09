@@ -39,6 +39,9 @@ class UserService {
         if (!user) {
             throw ApiError.badRequest("UserDoesntExist", "Такого пользователя не существует")
         }
+        if (!user.isActivated) {
+            throw ApiError.unauthorized("UserIsNotActivated", "Пользователь не зарегистрирован")
+        }
         const tokens = TokenService.generateTokens({
             id: user.id,
             user: user.username,
@@ -50,7 +53,7 @@ class UserService {
         if (!await bcrypt.compareSync(password, user.password)) {
             throw ApiError.internal("WrongPassword", "Пароль неверен")
         }
-        return {...tokens, id: user.id, user: user.username, email: user.email, role: user.role}
+        return {...tokens, userData: {id: user.id, user: user.username, email: user.email, role: user.role}}
     }
 
     async logout(refreshToken) {
@@ -64,10 +67,11 @@ class UserService {
             const user = await User.create({username, email, password: hashPassword})
             await MailService.sendActivationMail(email)
 
-            const tokens = TokenService.generateTokens({id: user.id, username, email, role})
-            await TokenService.saveToken(user.id, tokens.refreshToken)
+            // const tokens = TokenService.generateTokens({id: user.id, username, email, role})
+            // await TokenService.saveToken(user.id, tokens.refreshToken)
 
-            return {...tokens, id: user.id, user: user.username, email: user.email, role: user.role}
+            // return {...tokens, id: user.id, userData: {user: user.username, email: user.email, role: user.role}}
+            return {userData: {id: user.id, user: user.username, email: user.email, role: user.role}}
         }
     }
 

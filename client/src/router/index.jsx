@@ -6,6 +6,8 @@ import Admin from "../pages/Admin.jsx";
 import Auth from "../pages/Auth.jsx";
 import Basket from "../pages/Basket.jsx";
 import Item from "../pages/Item.jsx";
+import Login from "../pages/Login.jsx";
+import Registration from "../pages/Registration.jsx";
 
 const HomePage = () => {
     return (
@@ -17,7 +19,7 @@ const HomePage = () => {
 export const routes = [
     {path: SHOP_ROUTE, element: Shop},
     {path: ADMIN_ROUTE, element: Admin, private: true},
-    {path: LOGIN_ROUTE, element: Auth},
+    {path: LOGIN_ROUTE, element: Login},
     {path: REGISTRATION_ROUTE, element: Auth},
     {path: BASKET_ROUTE, element: Basket},
     {path: ITEM_ROUTE + "/itemId", element: Item},

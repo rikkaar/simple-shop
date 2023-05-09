@@ -3,7 +3,7 @@ import React from 'react';
 const Admin = () => {
     return (
         <div>
-            DTJ@!
+            ADMIN PAGE
         </div>
     );
 };

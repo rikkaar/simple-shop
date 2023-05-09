@@ -22,8 +22,10 @@ const NavBar = observer(() => {
                 </ul>
                 : <ul className="list-none">
                     <Link to={"/"} className={"nav__item"}>Товары</Link>
+                    <Link to={"/login"} className={"nav__item"}
+                          onClick={() => auth.setIsVisible(!auth.isVisible)}>Войти</Link>
                     <Link to={"/registration"} className={"nav__item"}
-                          onClick={() => auth.setIsVisible(!auth.isVisible)}>Авторизация</Link>
+                          onClick={() => auth.setIsVisible(!auth.isVisible)}>Регистрация</Link>
                 </ul>
             }
         </div>);

@@ -1,0 +1,25 @@
+@tailwind components;
+
+
+.glass {
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px #4747470b;
+    backdrop-filter: blur(7.1px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    @apply border-4 border-gray-50 w-[30%] shrink-0 h-3/4 rounded-3xl py-14 px-7 min-w-[350px];
+}
+
+.profile_img {
+    @apply border-4 border-gray-100 w-[135px] rounded-full shadow-lg cursor-pointer hover:border-gray-200
+}
+
+.textBox {
+    @apply border-0 px-5 py-4 rounded-xl w-3/4 shadow-sm text-lg focus:outline-none
+}
+
+.btn {
+    @apply border bg-indigo-300 w-3/4 py-4 rounded-lg text-xl text-gray-50 shadow-sm text-center hover:bg-red-400 transition-all duration-150
+}
+
+
